@@ -1,2 +1,2 @@
-# DroneBaseStation
-Cross Platform Application for controlling MAVLINK drones with NuvIoT
+# NuvIoT Drone Base Station
+Cross Platform Application written in Xamarin Forms for controlling MAVLINK drones with NuvIoT

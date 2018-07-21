@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LagoVista.Client.Core" Version="1.2.424-alpha0757" />
+    <PackageReference Include="LagoVista.Core" Version="2.1.393-beta1324" />
+    <PackageReference Include="LagoVista.XPlat" Version="1.2.424-alpha0757" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\libs\MavLink\MavLink.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<pge:LagoVistaContentPage  
+        xmlns="http://xamarin.com/schemas/2014/forms"
+              xmlns:pge="clr-namespace:LagoVista.XPlat.Core;assembly=LagoVista.XPlat.Core"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:LagoVista.DroneBaseStation"
+             x:Class="LagoVista.DroneBaseStation.Views.MainPage">
+
+    <pge:LagoVistaContentPage.Content>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+            <Label Text="Serial Ports" />
+            <Picker ItemsSource="{Binding Ports}" SelectedItem="{Binding SelectedPort, Mode=TwoWay}" ItemDisplayBinding="{Binding Name}" Grid.Row="1" />
+            <Button Text="{Binding ConnectMessage}" Command="{Binding OpenSerialPortCommand}" Grid.Row="2" />
+        </Grid>
+    </pge:LagoVistaContentPage.Content>
+</pge:LagoVistaContentPage >

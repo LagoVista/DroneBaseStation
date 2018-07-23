@@ -181,28 +181,28 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="LagoVista.Client.Core">
-      <Version>1.2.424-alpha0757</Version>
+      <Version>1.2.432-alpha1559</Version>
     </PackageReference>
     <PackageReference Include="LagoVista.Core">
-      <Version>2.1.393-beta1324</Version>
+      <Version>2.1.433-beta1401</Version>
     </PackageReference>
     <PackageReference Include="LagoVista.Core.Authentication">
-      <Version>2.1.393-beta1324</Version>
+      <Version>2.1.433-beta1401</Version>
     </PackageReference>
     <PackageReference Include="LagoVista.Core.Networking">
-      <Version>2.1.393-beta1324</Version>
+      <Version>2.1.433-beta1401</Version>
     </PackageReference>
     <PackageReference Include="LagoVista.Core.UWP">
-      <Version>1.2.424-alpha0757</Version>
+      <Version>1.2.432-alpha1559</Version>
     </PackageReference>
     <PackageReference Include="LagoVista.UserAdmin.Models">
-      <Version>2.1.393-beta1324</Version>
+      <Version>2.1.433-beta1401</Version>
     </PackageReference>
     <PackageReference Include="LagoVista.UWP.UI">
-      <Version>1.2.424-alpha0757</Version>
+      <Version>1.2.432-alpha1559</Version>
     </PackageReference>
     <PackageReference Include="LagoVista.XPlat">
-      <Version>1.2.424-alpha0757</Version>
+      <Version>1.2.432-alpha1559</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.AppCenter">
       <Version>1.8.0</Version>

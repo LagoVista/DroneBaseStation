@@ -7,6 +7,8 @@ using LagoVista.Core.Interfaces;
 using LagoVista.Core.IOC;
 using LagoVista.Core.PlatformSupport;
 using LagoVista.Core.ViewModels;
+using LagoVista.DroneBaseStation.Core.Interfaces;
+using LagoVista.DroneBaseStation.Core.Services;
 using LagoVista.DroneBaseStation.Core.ViewModels;
 using LagoVista.XPlat.Core.Services;
 using System;
@@ -57,6 +59,8 @@ namespace LagoVista.DroneBaseStation
 
             DeviceInfo.Register();
 
+            SLWIOC.Register<IMavLinkMessageParser, MavLinkMessageParser>();
+            SLWIOC.Register<ISerialTelemetryLink, SerialTelemetryLink>();
             SLWIOC.RegisterSingleton<IClientAppInfo>(clientAppInfo);
             SLWIOC.RegisterSingleton<IAppConfig>(new AppConfig());
 

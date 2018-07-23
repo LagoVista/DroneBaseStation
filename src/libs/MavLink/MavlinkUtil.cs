@@ -307,7 +307,7 @@ public static class MavlinkUtil
     {
         foreach (var item in source)
         {
-            if (item.msgid == msgid)
+            if (item.MsgId == msgid)
                 return item;
         }
 

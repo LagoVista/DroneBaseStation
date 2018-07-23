@@ -21,9 +21,8 @@ public partial class MAVLink
     public const int MAVLINK_LITTLE_ENDIAN = 1;
     public const int MAVLINK_BIG_ENDIAN = 0;
 
-    public const byte MAVLINK_STX = 253;
-
-	public const byte MAVLINK_STX_MAVLINK1 = 0xFE;
+    public const byte MAVLINK2_STX = 0xFD;
+    public const byte MAVLINK_STX_MAVLINK1 = 0xFE;
 
     public const byte MAVLINK_ENDIAN = MAVLINK_LITTLE_ENDIAN;
 
@@ -266,26 +265,26 @@ public partial class MAVLink
 
     public struct message_info
     {
-        public uint msgid { get; internal set; }
-        public string name { get; internal set; }
+        public uint MsgId { get; internal set; }
+        public string Name { get; internal set; }
         public byte crc { get; internal set; }
         public uint minlength { get; internal set; }
         public uint length { get; internal set; }
-        public Type type { get; internal set; }
+        public Type Type { get; internal set; }
 
         public message_info(uint msgid, string name, byte crc, uint minlength, uint length, Type type)
         {
-            this.msgid = msgid;
-            this.name = name;
+            this.MsgId = msgid;
+            this.Name = name;
             this.crc = crc;
 			this.minlength = minlength;
             this.length = length;
-            this.type = type;
+            this.Type = type;
         }
 
         public override string ToString()
         {
-            return String.Format("{0} - {1}",name,msgid);
+            return String.Format("{0} - {1}",Name,MsgId);
         }
     }   
 

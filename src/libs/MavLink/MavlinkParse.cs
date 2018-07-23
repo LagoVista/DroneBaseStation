@@ -103,7 +103,7 @@ public partial class MAVLink
                 // read STX byte
                 ReadWithTimeout(BaseStream, buffer, 0, 1);
 
-                if (buffer[0] == MAVLink.MAVLINK_STX || buffer[0] == MAVLINK_STX_MAVLINK1)
+                if (buffer[0] == MAVLink.MAVLINK2_STX || buffer[0] == MAVLINK_STX_MAVLINK1)
                     break;
 
                 readcount++;
@@ -114,7 +114,7 @@ public partial class MAVLink
                 throw new InvalidDataException("No header found in data");
             }
 
-            var headerlength = buffer[0] == MAVLINK_STX ? MAVLINK_CORE_HEADER_LEN : MAVLINK_CORE_HEADER_MAVLINK1_LEN;
+            var headerlength = buffer[0] == MAVLINK2_STX ? MAVLINK_CORE_HEADER_LEN : MAVLINK_CORE_HEADER_MAVLINK1_LEN;
             var headerlengthstx = headerlength + 1;
 
             // read header
@@ -122,7 +122,7 @@ public partial class MAVLink
 
             // packet length
             int lengthtoread = 0;
-            if (buffer[0] == MAVLINK_STX)
+            if (buffer[0] == MAVLINK2_STX)
             {
                 lengthtoread = buffer[1] + headerlengthstx + 2 - 2; // data + header + checksum - magic - length
                 if ((buffer[2] & MAVLINK_IFLAG_SIGNED) > 0)
@@ -147,7 +147,7 @@ public partial class MAVLink
             ushort crc = MavlinkCRC.crc_calculate(buffer, buffer.Length - 2);
 
             // calc extra bit of crc for mavlink 1.0+
-            if (message.header == MAVLINK_STX || message.header == MAVLINK_STX_MAVLINK1)
+            if (message.header == MAVLINK2_STX || message.header == MAVLINK_STX_MAVLINK1)
             {
                 crc = MavlinkCRC.crc_accumulate(MAVLINK_MESSAGE_INFOS.GetMessageInfo(message.msgid).crc, crc);
             }
@@ -221,7 +221,7 @@ public partial class MAVLink
 
             byte[] packet = new byte[data.Length + MAVLINK_NUM_NON_PAYLOAD_BYTES + extra];
 
-            packet[0] = MAVLINK_STX;
+            packet[0] = MAVLINK2_STX;
             packet[1] = (byte)data.Length;
             packet[2] = 0;//incompat  signing
             if (sign)

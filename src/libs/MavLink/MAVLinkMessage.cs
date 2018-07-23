@@ -17,7 +17,10 @@ public partial class MAVLink
         public static readonly MAVLinkMessage Invalid = new MAVLinkMessage();
         object _locker = new object();
 
-        private byte[] _buffer;
+
+        public int buffer_index = 0;
+
+        private byte[] _buffer = new byte[512];
 
         public byte[] buffer
         {
@@ -27,6 +30,11 @@ public partial class MAVLink
                 _buffer = value;
                 processBuffer(_buffer);
             }
+        }
+
+        public void add_byte(byte ch)
+        {
+            _buffer[buffer_index++] = ch;
         }
 
         public DateTime rxtime { get; set; }
@@ -41,7 +49,6 @@ public partial class MAVLink
         public byte targetsysid { get; set; }
         public byte targetcomponentid { get; set; }
         public byte compid { get; set; }
-
         public uint msgid { get; set; }
 
         public int payload_index { get; set; }
@@ -53,7 +60,7 @@ public partial class MAVLink
             get
             {
                 if (buffer != null && buffer.Length > 0)
-                    return (buffer[0] == MAVLINK_STX);
+                    return (buffer[0] == MAVLINK2_STX);
 
                 return false;
             }
@@ -61,7 +68,7 @@ public partial class MAVLink
 
         public string msgtypename
         {
-            get { return MAVLINK_MESSAGE_INFOS.GetMessageInfo(msgid).name; }
+            get { return MAVLINK_MESSAGE_INFOS.GetMessageInfo(msgid).Name; }
         }
 
         object _data;
@@ -75,7 +82,7 @@ public partial class MAVLink
                     if (_data != null)
                         return _data;
 
-                    _data = Activator.CreateInstance(MAVLINK_MESSAGE_INFOS.GetMessageInfo(msgid).type);
+                    _data = Activator.CreateInstance(MAVLINK_MESSAGE_INFOS.GetMessageInfo(msgid).Type);
 
                     try
                     {
@@ -105,23 +112,11 @@ public partial class MAVLink
         }
 
         public ushort crc16 { get; set; }
+        public ushort crc16Calc { get; set; }
+
+        public message_info MessageInfo { get; set; }
 
         public byte[] sig { get; set; }
-
-        public byte signature { get; set; }
-
-        public byte sigLinkid
-        {
-            get
-            {
-                if (sig != null)
-                {
-                    return sig[0];
-                }
-
-                return 0;
-            }
-        }
 
         public ulong sigTimestamp
         {
@@ -164,11 +159,11 @@ public partial class MAVLink
             processBuffer(buffer);
         }
 
-        internal void processBuffer(byte[] buffer)
+        public void processBuffer(byte[] buffer)
         {
             _data = null;
 
-            if (buffer[0] == MAVLINK_STX)
+            if (buffer[0] == MAVLINK2_STX)
             {
                 header = buffer[0];
                 payloadlength = buffer[1];

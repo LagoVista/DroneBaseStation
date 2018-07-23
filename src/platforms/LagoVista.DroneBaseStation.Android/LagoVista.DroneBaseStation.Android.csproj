@@ -49,19 +49,19 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="LagoVista.Client.Core">
-      <Version>1.2.424-alpha0757</Version>
+      <Version>1.2.432-alpha1559</Version>
     </PackageReference>
     <PackageReference Include="LagoVista.Core">
-      <Version>2.1.393-beta1324</Version>
+      <Version>2.1.433-beta1401</Version>
     </PackageReference>
     <PackageReference Include="LagoVista.Core.Authentication">
-      <Version>2.1.393-beta1324</Version>
+      <Version>2.1.433-beta1401</Version>
     </PackageReference>
     <PackageReference Include="LagoVista.UserAdmin.Models">
-      <Version>2.1.393-beta1324</Version>
+      <Version>2.1.433-beta1401</Version>
     </PackageReference>
     <PackageReference Include="LagoVista.XPlat">
-      <Version>1.2.424-alpha0757</Version>
+      <Version>1.2.432-alpha1559</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.AppCenter">
       <Version>1.8.0</Version>
@@ -79,11 +79,11 @@
       <Version>11.0.2</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.Forms" Version="3.1.0.637273" />
-    <PackageReference Include="Xamarin.Android.Support.Design" Version="27.0.2" />
-    <PackageReference Include="Xamarin.Android.Support.v7.AppCompat" Version="27.0.2" />
-    <PackageReference Include="Xamarin.Android.Support.v4" Version="27.0.2" />
-    <PackageReference Include="Xamarin.Android.Support.v7.CardView" Version="27.0.2" />
-    <PackageReference Include="Xamarin.Android.Support.v7.MediaRouter" Version="27.0.2" />
+    <PackageReference Include="Xamarin.Android.Support.Design" Version="27.0.2.1" />
+    <PackageReference Include="Xamarin.Android.Support.v7.AppCompat" Version="27.0.2.1" />
+    <PackageReference Include="Xamarin.Android.Support.v4" Version="27.0.2.1" />
+    <PackageReference Include="Xamarin.Android.Support.v7.CardView" Version="27.0.2.1" />
+    <PackageReference Include="Xamarin.Android.Support.v7.MediaRouter" Version="27.0.2.1" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MainActivity.cs" />

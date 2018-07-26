@@ -27,18 +27,36 @@ namespace LagoVista.DroneBaseStation.Core.Services
         public async Task GetWayPoints(IDrone drone, ISerialTelemetryLink link)
         {
             var req = new mavlink_mission_request_list_t();
-
             req.target_system = drone.SystemId;
             req.target_component = drone.ComponentId;
-            
-            await link.SendMessage(drone, MAVLINK_MSG_ID.MISSION_REQUEST_LIST, req);
 
-            var result = await link.WaitForMessageAsync(MAVLINK_MSG_ID.MISSION_COUNT, TimeSpan.FromMilliseconds(1000));
+            var result = await link.RequestDataAsync<mavlink_mission_count_t>(drone, MAVLINK_MSG_ID.MISSION_REQUEST_LIST, req, MAVLINK_MSG_ID.MISSION_COUNT, TimeSpan.FromSeconds(1000));
+            
             if (result.Successful)
             {
-                Debug.WriteLine($"Get go our response!");
+
+                for (ushort idx = 0; idx < result.Result.count; ++idx)
+                {
+                    var reqf = new mavlink_mission_request_int_t();
+
+                    reqf.target_system = drone.SystemId;
+                    reqf.target_component = drone.ComponentId;
+
+                    reqf.seq = idx;
+                    var wpResult = await link.RequestDataAsync<mavlink_mission_item_t>(drone, MAVLINK_MSG_ID.MISSION_REQUEST_INT, reqf, MAVLINK_MSG_ID.MISSION_ITEM, TimeSpan.FromSeconds(1000));
+                    if (wpResult.Successful)
+                    {
+                        Debug.WriteLine(wpResult.Result.x + " " + wpResult.Result.y + " " + wpResult.Result.z);
+                    }
+                    else
+                    {
+                        Debug.WriteLine($"No joy on {idx}");
+                    }
+                }
+
+                Debug.WriteLine($"Get go our response {result.Result.count}");
             }
-            else;
+            else
             {
                 Debug.WriteLine($"No joy");
             }

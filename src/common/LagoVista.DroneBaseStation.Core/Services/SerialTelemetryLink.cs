@@ -11,6 +11,7 @@ using LagoVista.Core.Validation;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using LagoVista.Drone;
+using System.Diagnostics;
 
 namespace LagoVista.DroneBaseStation.Core.Services
 {
@@ -71,46 +72,60 @@ namespace LagoVista.DroneBaseStation.Core.Services
             };
         }
 
-        protected void Complete(MAVLink.MAVLinkMessage msg)
+        protected void Complete(MAVLinkMessage msg)
         {
             if (Sessions.TryGetValue(msg.msgid, out var tcs))
             {
+                Debug.WriteLine("hit " + msg.msgid);
                 tcs.CompletionSource.SetResult(msg);
+            }
+            else
+            {
+                Debug.WriteLine("miss " + msg.msgid + " " + Sessions.Count);
+                if(Sessions.Count > 0)
+                {
+                    Debug.WriteLine("miss and first key > " + Sessions.First().Key + " " + msg.msgid + " " + (Sessions.First().Key == msg.msgid).ToString());
+                }
             }
         }
 
-        public Task<InvokeResult<MAVLinkMessage>> WaitForMessageAsync(MAVLINK_MSG_ID messageId, TimeSpan timeout)
+        public async Task<InvokeResult<TMavlinkPacket>> WaitForMessageAsync<TMavlinkPacket>(MAVLINK_MSG_ID messageId, TimeSpan timeout) where TMavlinkPacket : struct
         {
             try
             {
+                Debug.WriteLine("Start Waiting" + DateTime.Now.ToString());
                 var wor = new WaitOnRequest<object>((uint)messageId);
                 Sessions[(uint)messageId] = wor;
-                wor.CompletionSource.Task.Wait(timeout);
- 
-                if (!wor.CompletionSource.Task.IsCompleted)
+
+                MAVLinkMessage message = null;
+
+                for (var idx = 0; (idx < timeout.TotalMilliseconds / 100) && message == null; ++idx)
                 {
-                    return Task.FromResult(InvokeResult<MAVLinkMessage>.FromError("Timeout waiting for response."));
+                    if(wor.CompletionSource.Task.IsCompleted)
+                    {
+                        Debug.WriteLine("TASK IS COMPLETED!!!!");
+                        message = wor.CompletionSource.Task.Result as MAVLinkMessage;   
+                    }
+                    await Task.Delay(100);
                 }
-                else if (wor.CompletionSource.Task.Result == null)
+
+                Debug.WriteLine("End Waiting" + DateTime.Now.ToString());
+
+                if (message == null)
                 {
-                    return Task.FromResult(InvokeResult<MAVLinkMessage>.FromError("Null Response From Completion Routine."));
+                    return InvokeResult<TMavlinkPacket>.FromError("Timeout waiting for message.");
                 }
                 else
                 {
-                    var result = wor.CompletionSource.Task.Result;
-                    if (result is MAVLinkMessage typedResult)
-                    {
-                        return Task.FromResult(InvokeResult<MAVLinkMessage>.Create(typedResult));
-                    }
-                    else
-                    {
-                        return Task.FromResult(InvokeResult<MAVLinkMessage>.FromError($"Type Mismatch - Expected: {typeof(MAVLinkMessage).Name} - Actual: {result.GetType().Name}."));
-                    }
+                    var result = MavlinkUtil.ByteArrayToStructure<TMavlinkPacket>(message.buffer);
+                    return InvokeResult<TMavlinkPacket>.Create(result);
                 }
+
+
             }
             catch (Exception ex)
             {
-                return Task.FromResult(InvokeResult<MAVLinkMessage>.FromException("AsyncCoupler_WaitOnAsync", ex));
+                return InvokeResult<TMavlinkPacket>.FromException("AsyncCoupler_WaitOnAsync", ex);
             }
             finally
             {
@@ -212,6 +227,12 @@ namespace LagoVista.DroneBaseStation.Core.Services
             var buffer = MavlinkUtil.GeneratePacket(drone, MAVLINK_MSG_ID.MISSION_REQUEST_LIST, req);
             await _serialPort.WriteAsync(buffer);
             return InvokeResult.Success;
+        }
+
+        public async Task<InvokeResult<TMavlinkPacket>> RequestDataAsync<TMavlinkPacket>(IDrone drone, MAVLINK_MSG_ID outgoingMessageId, object req, MAVLINK_MSG_ID incomingMessageId, TimeSpan timeout) where TMavlinkPacket : struct
+        {
+            await SendMessage(drone, outgoingMessageId, req);
+            return await WaitForMessageAsync<TMavlinkPacket>(incomingMessageId, timeout);            
         }
     }
 }

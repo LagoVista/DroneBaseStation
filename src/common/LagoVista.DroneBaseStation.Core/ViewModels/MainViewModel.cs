@@ -39,7 +39,7 @@ namespace LagoVista.DroneBaseStation.Core.ViewModels
 
         public bool CanPressConnect()
         {
-            return !TelemetryLink.IsConected;
+            return _serialPortInfo != null;
         }
 
         public bool CanDoConnectedStuff()

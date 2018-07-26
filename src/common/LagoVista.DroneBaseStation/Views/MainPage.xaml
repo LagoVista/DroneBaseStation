@@ -12,6 +12,7 @@
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
@@ -21,10 +22,11 @@
             <Label Text="Serial Ports" />
             <Picker ItemsSource="{Binding Ports}" SelectedItem="{Binding SelectedPort, Mode=TwoWay}" ItemDisplayBinding="{Binding Name}" Grid.Row="1" />
             <Button Text="{Binding ConnectMessage}" Command="{Binding OpenSerialPortCommand}" Grid.Row="2" />
+            <Button Text="Get Waypoints" Command="{Binding GetWaypointsCommand}" Grid.Row="3" />
 
             <Label Text="{Binding TelemetryLink.MessagesReceived}" Grid.Column="1" />
             <Label Text="{Binding TelemetryLink.BytesReceived}" Grid.Column="1" Grid.Row="1" />
-            <ListView Grid.Row="3" ItemsSource="{Binding TelemetryLink.Messages}">
+            <ListView Grid.Row="4" ItemsSource="{Binding TelemetryLink.Messages}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>

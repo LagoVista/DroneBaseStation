@@ -15,9 +15,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LagoVista.DroneBaseStation.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LagoVista.DroneBaseStation.UWP", "src\platforms\LagoVista.DroneBaseStation.UWP\LagoVista.DroneBaseStation.UWP.csproj", "{AA3B09B1-0C5E-4953-91BA-B51FE4209984}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LagoVista.DroneBaseStation.Core", "src\common\LagoVista.DroneBaseStation.Core\LagoVista.DroneBaseStation.Core.csproj", "{AFD4E468-02A4-4CE2-A526-CACD2ED05078}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LagoVista.DroneBaseStation.Core", "src\common\LagoVista.DroneBaseStation.Core\LagoVista.DroneBaseStation.Core.csproj", "{AFD4E468-02A4-4CE2-A526-CACD2ED05078}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MavLink", "src\libs\MavLink\MavLink.csproj", "{6A56E002-46C9-420D-99CF-749D32BE6EFF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MavLink", "src\libs\MavLink\MavLink.csproj", "{6A56E002-46C9-420D-99CF-749D32BE6EFF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LagoVista.Drone", "src\LagoVista.Drone\LagoVista.Drone.csproj", "{AF810C05-EDA3-4CF4-ABC6-5A77DCD050E8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -355,6 +357,54 @@ Global
 		{6A56E002-46C9-420D-99CF-749D32BE6EFF}.Release|x64.Build.0 = Release|Any CPU
 		{6A56E002-46C9-420D-99CF-749D32BE6EFF}.Release|x86.ActiveCfg = Release|Any CPU
 		{6A56E002-46C9-420D-99CF-749D32BE6EFF}.Release|x86.Build.0 = Release|Any CPU
+		{AF810C05-EDA3-4CF4-ABC6-5A77DCD050E8}.Ad-Hoc|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF810C05-EDA3-4CF4-ABC6-5A77DCD050E8}.Ad-Hoc|Any CPU.Build.0 = Debug|Any CPU
+		{AF810C05-EDA3-4CF4-ABC6-5A77DCD050E8}.Ad-Hoc|ARM.ActiveCfg = Debug|Any CPU
+		{AF810C05-EDA3-4CF4-ABC6-5A77DCD050E8}.Ad-Hoc|ARM.Build.0 = Debug|Any CPU
+		{AF810C05-EDA3-4CF4-ABC6-5A77DCD050E8}.Ad-Hoc|iPhone.ActiveCfg = Debug|Any CPU
+		{AF810C05-EDA3-4CF4-ABC6-5A77DCD050E8}.Ad-Hoc|iPhone.Build.0 = Debug|Any CPU
+		{AF810C05-EDA3-4CF4-ABC6-5A77DCD050E8}.Ad-Hoc|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{AF810C05-EDA3-4CF4-ABC6-5A77DCD050E8}.Ad-Hoc|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{AF810C05-EDA3-4CF4-ABC6-5A77DCD050E8}.Ad-Hoc|x64.ActiveCfg = Debug|Any CPU
+		{AF810C05-EDA3-4CF4-ABC6-5A77DCD050E8}.Ad-Hoc|x64.Build.0 = Debug|Any CPU
+		{AF810C05-EDA3-4CF4-ABC6-5A77DCD050E8}.Ad-Hoc|x86.ActiveCfg = Debug|Any CPU
+		{AF810C05-EDA3-4CF4-ABC6-5A77DCD050E8}.Ad-Hoc|x86.Build.0 = Debug|Any CPU
+		{AF810C05-EDA3-4CF4-ABC6-5A77DCD050E8}.AppStore|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF810C05-EDA3-4CF4-ABC6-5A77DCD050E8}.AppStore|Any CPU.Build.0 = Debug|Any CPU
+		{AF810C05-EDA3-4CF4-ABC6-5A77DCD050E8}.AppStore|ARM.ActiveCfg = Debug|Any CPU
+		{AF810C05-EDA3-4CF4-ABC6-5A77DCD050E8}.AppStore|ARM.Build.0 = Debug|Any CPU
+		{AF810C05-EDA3-4CF4-ABC6-5A77DCD050E8}.AppStore|iPhone.ActiveCfg = Debug|Any CPU
+		{AF810C05-EDA3-4CF4-ABC6-5A77DCD050E8}.AppStore|iPhone.Build.0 = Debug|Any CPU
+		{AF810C05-EDA3-4CF4-ABC6-5A77DCD050E8}.AppStore|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{AF810C05-EDA3-4CF4-ABC6-5A77DCD050E8}.AppStore|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{AF810C05-EDA3-4CF4-ABC6-5A77DCD050E8}.AppStore|x64.ActiveCfg = Debug|Any CPU
+		{AF810C05-EDA3-4CF4-ABC6-5A77DCD050E8}.AppStore|x64.Build.0 = Debug|Any CPU
+		{AF810C05-EDA3-4CF4-ABC6-5A77DCD050E8}.AppStore|x86.ActiveCfg = Debug|Any CPU
+		{AF810C05-EDA3-4CF4-ABC6-5A77DCD050E8}.AppStore|x86.Build.0 = Debug|Any CPU
+		{AF810C05-EDA3-4CF4-ABC6-5A77DCD050E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF810C05-EDA3-4CF4-ABC6-5A77DCD050E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF810C05-EDA3-4CF4-ABC6-5A77DCD050E8}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{AF810C05-EDA3-4CF4-ABC6-5A77DCD050E8}.Debug|ARM.Build.0 = Debug|Any CPU
+		{AF810C05-EDA3-4CF4-ABC6-5A77DCD050E8}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{AF810C05-EDA3-4CF4-ABC6-5A77DCD050E8}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{AF810C05-EDA3-4CF4-ABC6-5A77DCD050E8}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{AF810C05-EDA3-4CF4-ABC6-5A77DCD050E8}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{AF810C05-EDA3-4CF4-ABC6-5A77DCD050E8}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{AF810C05-EDA3-4CF4-ABC6-5A77DCD050E8}.Debug|x64.Build.0 = Debug|Any CPU
+		{AF810C05-EDA3-4CF4-ABC6-5A77DCD050E8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{AF810C05-EDA3-4CF4-ABC6-5A77DCD050E8}.Debug|x86.Build.0 = Debug|Any CPU
+		{AF810C05-EDA3-4CF4-ABC6-5A77DCD050E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF810C05-EDA3-4CF4-ABC6-5A77DCD050E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF810C05-EDA3-4CF4-ABC6-5A77DCD050E8}.Release|ARM.ActiveCfg = Release|Any CPU
+		{AF810C05-EDA3-4CF4-ABC6-5A77DCD050E8}.Release|ARM.Build.0 = Release|Any CPU
+		{AF810C05-EDA3-4CF4-ABC6-5A77DCD050E8}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{AF810C05-EDA3-4CF4-ABC6-5A77DCD050E8}.Release|iPhone.Build.0 = Release|Any CPU
+		{AF810C05-EDA3-4CF4-ABC6-5A77DCD050E8}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{AF810C05-EDA3-4CF4-ABC6-5A77DCD050E8}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{AF810C05-EDA3-4CF4-ABC6-5A77DCD050E8}.Release|x64.ActiveCfg = Release|Any CPU
+		{AF810C05-EDA3-4CF4-ABC6-5A77DCD050E8}.Release|x64.Build.0 = Release|Any CPU
+		{AF810C05-EDA3-4CF4-ABC6-5A77DCD050E8}.Release|x86.ActiveCfg = Release|Any CPU
+		{AF810C05-EDA3-4CF4-ABC6-5A77DCD050E8}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -366,6 +416,7 @@ Global
 		{AA3B09B1-0C5E-4953-91BA-B51FE4209984} = {DBFA2576-5139-4E73-B7FD-288753385960}
 		{AFD4E468-02A4-4CE2-A526-CACD2ED05078} = {4E22072D-F725-4781-BC5A-52CC47891D82}
 		{6A56E002-46C9-420D-99CF-749D32BE6EFF} = {4E22072D-F725-4781-BC5A-52CC47891D82}
+		{AF810C05-EDA3-4CF4-ABC6-5A77DCD050E8} = {4E22072D-F725-4781-BC5A-52CC47891D82}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0D6F3BC2-21AB-4366-A8A1-1EEC1A1A0509}

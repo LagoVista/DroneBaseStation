@@ -203,12 +203,12 @@ namespace LagoVista.DroneBaseStation.Core.Services
 
                         if ((_currentMessage.crc16 >> 8) != (_currentMessage.crc16Calc >> 8) || (_currentMessage.crc16 & 0xff) != (_currentMessage.crc16Calc & 0xff))
                         {                            
-                            Debug.WriteLine($"INVALID CHECK SUM MAVLINK1 - Message Id: {_currentMessage.msgid} - {_currentMessage.payloadlength} - {_currentMessage.seq} - {_currentMessage.crc16:x2} - {_currentMessage.crc16Calc:x2}");
+                            //Debug.WriteLine($"INVALID CHECK SUM MAVLINK1 - Message Id: {_currentMessage.msgid} - {_currentMessage.payloadlength} - {_currentMessage.seq} - {_currentMessage.crc16:x2} - {_currentMessage.crc16Calc:x2}");
                         }
                         else
                         {
                             MessageParsed?.Invoke(this, _currentMessage);
-                            Debug.WriteLine($"VALID CHECK SUM MAVLINK1 - Message Id: {_currentMessage.msgid} - {_currentMessage.payloadlength} - {_currentMessage.seq} - {_currentMessage.crc16:x2} - {_currentMessage.crc16Calc:x2}");
+                            ///Debug.WriteLine($"VALID CHECK SUM MAVLINK1 - Message Id: {_currentMessage.msgid} - {_currentMessage.payloadlength} - {_currentMessage.seq} - {_currentMessage.crc16:x2} - {_currentMessage.crc16Calc:x2}");
                         }
                         _currentMessage.processBuffer(_currentMessage.buffer);
                         _currentMessage = null;

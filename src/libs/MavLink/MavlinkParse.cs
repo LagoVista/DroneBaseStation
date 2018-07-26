@@ -103,7 +103,7 @@ public partial class MAVLink
                 // read STX byte
                 ReadWithTimeout(BaseStream, buffer, 0, 1);
 
-                if (buffer[0] == MAVLink.MAVLINK2_STX || buffer[0] == MAVLINK_STX_MAVLINK1)
+                if (buffer[0] == MAVLink.MAVLINK2_STX || buffer[0] == MAVLINK1_STX)
                     break;
 
                 readcount++;
@@ -147,7 +147,7 @@ public partial class MAVLink
             ushort crc = MavlinkCRC.crc_calculate(buffer, buffer.Length - 2);
 
             // calc extra bit of crc for mavlink 1.0+
-            if (message.header == MAVLINK2_STX || message.header == MAVLINK_STX_MAVLINK1)
+            if (message.header == MAVLINK2_STX || message.header == MAVLINK1_STX)
             {
                 crc = MavlinkCRC.crc_accumulate(MAVLINK_MESSAGE_INFOS.GetMessageInfo(message.msgid).crc, crc);
             }
@@ -172,7 +172,7 @@ public partial class MAVLink
 
             byte[] packet = new byte[data.Length + 6 + 2];
 
-            packet[0] = MAVLINK_STX_MAVLINK1;
+            packet[0] = MAVLINK1_STX;
             packet[1] = (byte)data.Length;
             packet[2] = (byte)packetcount;
             if (sequence != -1)
@@ -213,7 +213,7 @@ public partial class MAVLink
 
             data = MavlinkUtil.StructureToByteArray(indata);
 
-            MavlinkUtil.trim_payload(ref data);
+            MavlinkUtil.TrimePayload(ref data);
 
             int extra = 0;
             if (sign)

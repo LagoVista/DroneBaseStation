@@ -1,12 +1,11 @@
 ﻿using LagoVista.Client.Core.ViewModels;
 using LagoVista.Core.Commanding;
 using LagoVista.Core.Models;
-using LagoVista.Core.PlatformSupport;
+using LagoVista.Drone;
+using LagoVista.Drone.Models;
 using LagoVista.DroneBaseStation.Core.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Threading.Tasks;
 using static MAVLink;
 
@@ -15,22 +14,37 @@ namespace LagoVista.DroneBaseStation.Core.ViewModels
     public class MainViewModel : AppViewModelBase
     {
 
-        public MainViewModel(ISerialTelemetryLink telemeteryLink)
+        IDrone _apmDrone;
+        IDroneAdapter _droneAdapter;
+        IMissionPlanner _planner;
+
+        public MainViewModel(ISerialTelemetryLink telemeteryLink, IDroneAdapter droneAdapter, IMissionPlanner planner)
         {
             TelemetryLink = telemeteryLink;
             TelemetryLink.MessageParsed += _telemeteryLink_MessageParsed;        
             OpenSerialPortCommand = new RelayCommand(HandleConnectClick, CanPressConnect);
+            GetWaypointsCommand = new RelayCommand(GetWaypoints, CanDoConnectedStuff);
+
             Title = "Kevin";
+
+            _apmDrone = new LagoVista.Drone.Models.Drone();
+            _droneAdapter = droneAdapter;
+            _planner = planner;
         }
 
-        private void _telemeteryLink_MessageParsed(object sender, MAVLinkMessage e)
+        private void _telemeteryLink_MessageParsed(object sender, MAVLinkMessage msg)
         {
-         
+            _droneAdapter.UpdateDroneAsync(_apmDrone, msg);
         }
 
         public bool CanPressConnect()
         {
             return !TelemetryLink.IsConected;
+        }
+
+        public bool CanDoConnectedStuff()
+        {
+            return TelemetryLink.IsConected;
         }
 
         public async override Task InitAsync()
@@ -51,12 +65,18 @@ namespace LagoVista.DroneBaseStation.Core.ViewModels
             }
         }
 
+        public async void GetWaypoints()
+        {
+            await _planner.GetWayPoints(_apmDrone, TelemetryLink);
+        }
+
         public async void OpenSerialPort()
         {
             SelectedPort.BaudRate = 57600;
             await TelemetryLink.OpenAsync(SelectedPort);
             ConnectMessage = "Disconnect";
             OpenSerialPortCommand.RaiseCanExecuteChanged();
+            GetWaypointsCommand.RaiseCanExecuteChanged();
         }
 
         public async void CloseSerialPort()
@@ -64,6 +84,7 @@ namespace LagoVista.DroneBaseStation.Core.ViewModels
             await TelemetryLink.CloseAsync();
             ConnectMessage = "Connect";
             OpenSerialPortCommand.RaiseCanExecuteChanged();
+            GetWaypointsCommand.RaiseCanExecuteChanged();
         }       
 
         private SerialPortInfo _serialPortInfo;
@@ -74,6 +95,7 @@ namespace LagoVista.DroneBaseStation.Core.ViewModels
             {
                 Set(ref _serialPortInfo, value);
                 OpenSerialPortCommand.RaiseCanExecuteChanged();
+                GetWaypointsCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -96,6 +118,7 @@ namespace LagoVista.DroneBaseStation.Core.ViewModels
         { get; set; }
 
         public RelayCommand OpenSerialPortCommand { get; }
+        public RelayCommand GetWaypointsCommand { get; }
 
         public ISerialTelemetryLink TelemetryLink { get; }
     }

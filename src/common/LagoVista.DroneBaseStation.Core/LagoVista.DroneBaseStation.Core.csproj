@@ -5,12 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LagoVista.Client.Core" Version="1.2.432-alpha1559" />
-    <PackageReference Include="LagoVista.Core" Version="2.1.433-beta1401" />
-    <PackageReference Include="LagoVista.XPlat" Version="1.2.432-alpha1559" />
+    <PackageReference Include="LagoVista.Client.Core" Version="1.2.434-alpha1958" />
+    <PackageReference Include="LagoVista.Core" Version="2.1.435-beta1758" />
+    <PackageReference Include="LagoVista.XPlat" Version="1.2.434-alpha1958" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\LagoVista.Drone\LagoVista.Drone.csproj" />
     <ProjectReference Include="..\..\libs\MavLink\MavLink.csproj" />
   </ItemGroup>
 

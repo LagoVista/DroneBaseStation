@@ -21,7 +21,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="LagoVista.Core" Version="2.1.435-beta1758" />
     <PackageReference Include="log4net" Version="2.0.8" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\LagoVista.Drone\LagoVista.Drone.csproj" />
   </ItemGroup>
 
 

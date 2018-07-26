@@ -1,16 +1,20 @@
-﻿using System;
+﻿using LagoVista.Drone;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Text;
-
+using static MAVLink;
 
 /// <summary>
 /// Static methods and helpers for creation and manipulation of Mavlink packets
 /// </summary>
 public static class MavlinkUtil
 {
+    const int gcssysid = 255;
+
     /// <summary>
     /// Create a new mavlink packet object from a byte array as recieved over mavlink
     /// Endianess will be detetected using packet inspection
@@ -81,7 +85,7 @@ public static class MavlinkUtil
         return (TMavlinkPacket) obj;
     }
 
-    public static byte[] trim_payload(ref byte[] payload)
+    public static byte[] TrimePayload(ref byte[] payload)
     {
         var length = payload.Length;
         while (length > 1 && payload[length - 1] == 0)
@@ -312,5 +316,175 @@ public static class MavlinkUtil
         }
 
         return new MAVLink.message_info();
+    }
+
+    private static Object objLock = new object();
+
+
+    private static int _packetCount;
+
+    public static byte[] GeneratePacket(IDrone drone, MAVLINK_MSG_ID messageType, object indata)
+    {
+        return GeneratePacket(drone, (int)messageType, indata);
+    }
+
+
+    /// <summary>
+    /// Generate a Mavlink Packet and write to serial
+    /// </summary>
+    /// <param name="messageType">type number = MAVLINK_MSG_ID</param>
+    /// <param name="indata">struct of data</param>
+    public static byte[] GeneratePacket(IDrone drone, int messageType, object indata, bool forcemavlink2 = false, bool forcesigning = false)
+    {
+        lock (objLock)
+        {
+            var data = MavlinkUtil.StructureToByteArray(indata);
+            var packet = new byte[0];
+            int i = 0;
+
+            // are we mavlink2 enabled for this sysid/compid
+            if (!drone.MavLink2 && messageType < 256 && !forcemavlink2)
+            {
+                var info = MAVLink.MAVLINK_MESSAGE_INFOS.SingleOrDefault(p => p.MsgId == messageType);
+                if (data.Length != info.minlength)
+                {
+                    Array.Resize(ref data, (int)info.minlength);
+                }
+
+                //Console.WriteLine(DateTime.Now + " PC Doing req "+ messageType + " " + this.BytesToRead);
+                packet = new byte[data.Length + 6 + 2];
+
+                packet[0] = MAVLINK1_STX;
+                packet[1] = (byte)data.Length;
+                packet[2] = (byte)_packetCount;
+
+                _packetCount++;
+
+                packet[3] = gcssysid;
+                packet[4] = (byte)MAV_COMPONENT.MAV_COMP_ID_MISSIONPLANNER;
+                packet[5] = (byte)messageType;
+
+                i = 6;
+                foreach (byte b in data)
+                {
+                    packet[i] = b;
+                    i++;
+                }
+
+                ushort checksum = MavlinkCRC.crc_calculate(packet, packet[1] + 6);
+
+                checksum = MavlinkCRC.crc_accumulate(MAVLINK_MESSAGE_INFOS.GetMessageInfo((uint)messageType).crc, checksum);
+
+
+                byte ck_a = (byte)(checksum & 0xFF); ///< High byte
+                byte ck_b = (byte)(checksum >> 8); ///< Low byte
+
+                packet[i] = ck_a;
+                i += 1;
+                packet[i] = ck_b;
+                i += 1;
+            }
+            else
+            {
+                // trim packet for mavlink2
+                MavlinkUtil.TrimePayload(ref data);
+
+                packet = new byte[data.Length + MAVLINK_NUM_HEADER_BYTES + MAVLINK_NUM_CHECKSUM_BYTES + MAVLINK_SIGNATURE_BLOCK_LEN];
+
+                packet[0] = MAVLINK2_STX;
+                packet[1] = (byte)data.Length;
+                packet[2] = 0; // incompat
+                if (drone.Signing || forcesigning) // current mav
+                    packet[2] |= MAVLINK_IFLAG_SIGNED;
+                packet[3] = 0; // compat
+                packet[4] = (byte)_packetCount;
+
+                _packetCount++;
+
+                packet[5] = gcssysid;
+                packet[6] = (byte)MAV_COMPONENT.MAV_COMP_ID_MISSIONPLANNER;
+                packet[7] = (byte)(messageType & 0xff);
+                packet[8] = (byte)((messageType >> 8) & 0xff);
+                packet[9] = (byte)((messageType >> 16) & 0xff);
+
+                i = 10;
+                foreach (byte b in data)
+                {
+                    packet[i] = b;
+                    i++;
+                }
+
+                ushort checksum = MavlinkCRC.crc_calculate(packet, packet[1] + MAVLINK_NUM_HEADER_BYTES);
+
+                checksum = MavlinkCRC.crc_accumulate(MAVLINK_MESSAGE_INFOS.GetMessageInfo((uint)messageType).crc, checksum);
+
+                byte ck_a = (byte)(checksum & 0xFF); ///< High byte
+                byte ck_b = (byte)(checksum >> 8); ///< Low byte
+
+                packet[i] = ck_a;
+                i += 1;
+                packet[i] = ck_b;
+                i += 1;
+
+                if (drone.Signing || forcesigning)
+                {
+                    //https://docs.google.com/document/d/1ETle6qQRcaNWAmpG2wz0oOpFKSF_bcTmYMQvtTGI8ns/edit
+
+                    /*
+                    8 bits of link ID
+                    48 bits of timestamp
+                    48 bits of signature
+                    */
+
+                    // signature = sha256_48(secret_key + header + payload + CRC + link-ID + timestamp)
+
+                    var timestamp = (UInt64)((DateTime.UtcNow - new DateTime(2015, 1, 1)).TotalMilliseconds * 100);
+
+                    if (timestamp == drone.TimeStamp)
+                        timestamp++;
+
+                    drone.TimeStamp = timestamp;
+
+                    var timebytes = BitConverter.GetBytes(timestamp);
+
+                    var sig = new byte[7]; // 13 includes the outgoing hash
+                    sig[0] = drone.SendLinkId;
+                    Array.Copy(timebytes, 0, sig, 1, 6); // timestamp
+
+                    //Console.WriteLine("gen linkid {0}, time {1} {2} {3} {4} {5} {6} {7}", sig[0], sig[1], sig[2], sig[3], sig[4], sig[5], sig[6], timestamp);
+
+                    var signingKey = drone.SigningKey;
+
+                    if (signingKey == null || signingKey.Length != 32)
+                    {
+                        signingKey = new byte[32];
+                    }
+
+                    using (SHA256Managed signit = new SHA256Managed())
+                    {
+                        signit.TransformBlock(signingKey, 0, signingKey.Length, null, 0);
+                        signit.TransformBlock(packet, 0, i, null, 0);
+                        signit.TransformFinalBlock(sig, 0, sig.Length);
+                        var ctx = signit.Hash;
+                        // trim to 48
+                        Array.Resize(ref ctx, 6);
+
+                        foreach (byte b in sig)
+                        {
+                            packet[i] = b;
+                            i++;
+                        }
+
+                        foreach (byte b in ctx)
+                        {
+                            packet[i] = b;
+                            i++;
+                        }
+                    }
+                }
+            }
+
+            return packet;
+        }
     }
 }
